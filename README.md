@@ -1,2 +1,2 @@
-# orbitDetermination2
-Remake of a previous OD project
+# Orbit Determination 2
+Remake of a previous OD project.

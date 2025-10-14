@@ -9,5 +9,6 @@ Orbit propagation is according to numerical integation of Newtonian EoM governin
 
 Process:
 1 Import TLE data from 2 satellites.
-    a. Julian Date, RA, Declination, 
-2 
+    a. Julian Date, RA, Declination, Local Sidereal Time (LST)
+    b. 3 measurements each. 
+2 Import site information (observation station was at U of Az ground station)

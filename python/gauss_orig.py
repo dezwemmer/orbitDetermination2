@@ -121,17 +121,13 @@ roots8 = np.roots(coeffs8)
 realIdx = np.isreal(roots8)
 realRoots = roots8[realIdx].real
 
-print("Debug",rSite2_Eci)
-
 # Use first root find an initial estimate of slant-range values
 u = muE / realRoots[0]**3
 cCoeffs = np.array([a1 + a1u * u, -1, a3 + a3u * u])
 slantsInitial = np.divide(np.matmul(M,-cCoeffs),cCoeffs)
 
 ### [End of Gauss Angles Only]
-# print(L)
-# print(rSite1_Eci)
-print("Slant Range Initial Guess: :", slantsInitial)
+print("Slant Ranges Initial Guess: :", slantsInitial)
 
 L = np.transpose(L)
 print('r1 = ',slantsInitial[0]*L[0] + rSite1_Eci)

@@ -6,9 +6,11 @@
 # the second measurement.
 
 import constants as c
+from gibbs import gibbsAlgo
+from math import acos, degrees
 import numpy as np
 
-def gaussAlgo(L,jd,rSite_Eci):
+def gaussAlgo(obj,L,jd,rSite_Eci):
     # calculate taus (change in times between observations)
     tau1 = (jd[0] - jd[1])*24*60*60
     tau3 = (jd[2] - jd[1])*24*60*60
@@ -22,7 +24,7 @@ def gaussAlgo(L,jd,rSite_Eci):
     # Determinant of L matrix
     Ldet = np.linalg.det(L)
 
-    # Not entirely sure why this needs to be transposed
+    # Calculate the Inverse of the L array (LOS vectors) and transpose for multiplication
     Linv = np.transpose(np.array([[  L[1][1]*L[2][2]-L[1][2]*L[2][1], -L[1][0]*L[2][2]+L[1][2]*L[2][0],  L[1][0]*L[2][1]-L[1][1]*L[2][0] ],
                         [ -L[0][1]*L[2][2]+L[0][2]*L[2][1],  L[0][0]*L[2][2]-L[0][2]*L[2][0], -L[0][0]*L[2][1]+L[0][1]*L[2][0] ],
                         [  L[0][1]*L[1][2]-L[0][2]*L[1][1], -L[0][0]*L[1][2]+L[0][2]*L[1][0],  L[0][0]*L[1][1]-L[0][1]*L[1][0] ]]) / Ldet)
@@ -37,11 +39,45 @@ def gaussAlgo(L,jd,rSite_Eci):
     realIdx = np.isreal(roots8)
     realRoots = roots8[realIdx].real
 
-    print("Debug",rSite_Eci[1])
-
     # Use first root find an initial estimate of slant-range values
     u = c.muE / realRoots[0]**3
     cCoeffs = np.array([a1 + a1u * u, -1, a3 + a3u * u])
+    #TODO: make slant range finder a function
     slantsInitial = np.divide(np.matmul(M,-cCoeffs),cCoeffs)
 
-    print("Slant Range Initial Guess: :", slantsInitial)
+    print("Slant Ranges Initial Guess: :", slantsInitial)
+
+    ## End of Gauss
+
+    
+    # Note:
+    #   Herrick-Gibbs is used when measurements are close together (<=5 degrees)
+    #   Gibbs is used when measurements are far apart (5-20 degrees)
+    #   Larger than 20 degrees is too large of measurement for reliable accuracy
+    
+    # Use slant ranges to get position vectors
+    r1 = slantsInitial[0]*L[:,0]+rSite_Eci[0]
+    r2 = slantsInitial[1]*L[:,1]+rSite_Eci[1]
+    r3 = slantsInitial[2]*L[:,2]+rSite_Eci[2]
+    obj.r = r2
+
+    # Determine angles between vectors. The size of angles determines the method
+    # used for finding the velocity of the middle measurement.
+    angle12 = degrees(acos(np.dot(r1,r2)/(np.linalg.norm(r1)*np.linalg.norm(r2))))
+    angle23 = degrees(acos(np.dot(r2,r3)/(np.linalg.norm(r2)*np.linalg.norm(r3))))
+    print(angle12)
+    print(angle23)
+
+    
+    
+
+    # Find velocity using either Gibbs of Herrick-Gibbs
+    if (5 < angle12 <=20) or (5 < angle23 <=20):
+        print("Using GIBBS method to solve for middle velocity.")
+        obj.v = gibbsAlgo(r1,r2,r3)
+    else:
+        print("Using HERRICK-GIBBS method to solve for middle velocity.")
+    
+    
+                      
+    

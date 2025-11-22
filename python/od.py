@@ -11,6 +11,12 @@ import numpy as np
 
 
 ### Supporting Functions
+class SatState:
+    def __init__(self, r,v):
+        self.r = r
+        self.v = v
+
+
 def calcLosUnitVector(ra,dec):
     r = radians(ra)
     d = radians(dec)
@@ -91,10 +97,15 @@ def orbitDetermination(inputFileName):
         L.append(los)
     L = np.transpose(L)
 
+    # Create a satellite state object
+    svState = SatState(0.0,0.0)
+
     ### Call appropriate orbit determination algorithm
     if data["odtype"] == "gauss":
         print("Running Gauss Algorithm")
-        gaussAlgo(L,data["jd"],rSite_Eci)
+        gaussAlgo(svState,L,data["jd"],rSite_Eci)
+        print("r2: ",svState.r)
+        print("v2: ",svState.v)
     elif data["odtype"] == "double-r":
         print("Running Double-R Iteration Algorithm")
     else:

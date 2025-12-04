@@ -9,6 +9,7 @@ import constants as c
 from gibbs import gibbsAlgo
 from math import acos, degrees
 import numpy as np
+from rv2OrbElem import rv2OrbElem
 
 def gaussAlgo(obj,L,jd,rSite_Eci):
     # calculate taus (change in times between observations)
@@ -65,19 +66,16 @@ def gaussAlgo(obj,L,jd,rSite_Eci):
     # used for finding the velocity of the middle measurement.
     angle12 = degrees(acos(np.dot(r1,r2)/(np.linalg.norm(r1)*np.linalg.norm(r2))))
     angle23 = degrees(acos(np.dot(r2,r3)/(np.linalg.norm(r2)*np.linalg.norm(r3))))
-    print(angle12)
-    print(angle23)
-
     
     
-
-    # Find velocity using either Gibbs of Herrick-Gibbs
+    # Find middle velocity (v2) using either Gibbs of Herrick-Gibbs
     if (5 < angle12 <=20) or (5 < angle23 <=20):
-        print("Using GIBBS method to solve for middle velocity.")
+        print("Measurement separation large...Using GIBBS method to solve for middle velocity.")
         obj.v = gibbsAlgo(r1,r2,r3)
     else:
-        print("Using HERRICK-GIBBS method to solve for middle velocity.")
+        print("Measurement separation small...Using HERRICK-GIBBS method to solve for middle velocity.")
     
-    
-                      
+    rv2OrbElem(obj)
+    # Find semiparameter (p) using RV2COE
+    # TODO: make this a separate function
     

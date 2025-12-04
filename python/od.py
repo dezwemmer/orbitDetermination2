@@ -12,9 +12,14 @@ import numpy as np
 
 ### Supporting Functions
 class SatState:
-    def __init__(self, r,v):
-        self.r = r
-        self.v = v
+    def __init__(self,r=0.0,v=0.0,a=0.0,e=0.0,i=0.0,lan=0.0,ap=0.0):
+        self.r = r      # km
+        self.v = v      # km/s
+        self.a = a      # km
+        self.e = e
+        self.i = i      # degrees
+        self.lan = lan  # degrees
+        self.ap = ap    # degrees
 
 
 def calcLosUnitVector(ra,dec):

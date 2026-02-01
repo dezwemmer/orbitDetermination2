@@ -74,7 +74,7 @@ def gaussAlgo(obj,L,jd,rSite_Eci):
         obj.v = gibbsAlgo(r1,r2,r3)
     else:
         print("Measurement separation small...Using HERRICK-GIBBS method to solve for middle velocity.")
-    
+        print("Feature not implemented yet.")
     rv2OrbElem(obj)
     # Find semiparameter (p) using RV2COE
     # TODO: make this a separate function

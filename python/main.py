@@ -8,6 +8,7 @@ def main():
     # Note: Specify input as the JSON file containing data from set of 3
     #       observations including site location.
     # TODO: add a text file to explain contents of inputs
+    # TODO: change JSON input to a parsed cmd line argument
     orbitDetermination("sv_vallado.json")
     
 

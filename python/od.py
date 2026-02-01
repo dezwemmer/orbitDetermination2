@@ -8,18 +8,20 @@ from gauss import gaussAlgo
 import json
 from math import cos,sin,radians, degrees, sqrt
 import numpy as np
+#from visualizeOrbit_fromRv import plot_eci_positions
 
 
 ### Supporting Functions
 class SatState:
-    def __init__(self,r=0.0,v=0.0,a=0.0,e=0.0,i=0.0,lan=0.0,ap=0.0):
-        self.r = r      # km
-        self.v = v      # km/s
-        self.a = a      # km
-        self.e = e
-        self.i = i      # degrees
-        self.lan = lan  # degrees
-        self.ap = ap    # degrees
+    def __init__(self,r=0.0,v=0.0,a=0.0,e=0.0,i=0.0,lan=0.0,ap=0.0,ta=0.0):
+        self.r = r      # position [km]
+        self.v = v      # velocity [km/s]
+        self.a = a      # semimajor axis [km]
+        self.e = e      # eccentricity [n/a]
+        self.i = i      # inclination [deg]
+        self.lan = lan  # longitude of ascending node [deg]
+        self.ap = ap    # argument of periapsis [deg]
+        self.ta = ta    # true anomaly [deg]
 
 
 def calcLosUnitVector(ra,dec):
@@ -111,6 +113,8 @@ def orbitDetermination(inputFileName):
         gaussAlgo(svState,L,data["jd"],rSite_Eci)
         print("r2: ",svState.r)
         print("v2: ",svState.v)
+        #plot_eci_positions(svState.r)
+        #TODO: Make a plotting function that plots three positions
     elif data["odtype"] == "double-r":
         print("Running Double-R Iteration Algorithm")
     else:
